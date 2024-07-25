@@ -1,10 +1,15 @@
+### Los servicios de Render gratuitos no aceptan protocolos para scalar datos, por lo tanto, 
+### el modelo a utilizar sera usado sin escalar los datos. Deben conseguirse predicciones favorables
+### dado que el randomforestregressor puede funcionar sin escalar los datos.
+
+
 from flask import Flask, request, render_template
 from pickle import load
 import pandas as pd
 
 app = Flask(__name__)
-model = load(open("../models/random_forest_regressor_42.sav", "rb"))
-scaler = load(open("../models/scaler.sav", "rb"))
+model = load(open("../models/random_forest_regressor_42_sin_scal.sav", "rb"))
+#scaler = load(open("../models/scaler.sav", "rb"))
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -22,10 +27,10 @@ def index():
             data_df = pd.DataFrame(data, columns=['CRIM', 'RM', 'DIS', 'LSTAT'])
             
             # Escalar los datos
-            data_scaled = scaler.transform(data_df)
+            #data_scaled = scaler.transform(data_df)
             
             # Realizar la predicción
-            prediction = model.predict(data_scaled)[0]
+            prediction = model.predict(data_df)[0]
             pred_class = f"{prediction:.3f} M$"
         else:
             pred_class = None
